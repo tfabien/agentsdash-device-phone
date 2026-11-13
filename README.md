@@ -11,14 +11,14 @@ Status: first version. It works on the home Wi-Fi over plain http and is read-on
 1. On the PC, turn LAN access on: `"lan": {"enabled": true}` in `~/.agentsdash/config.json` (or `AGENTSDASH_LAN=1`), then restart the hub. Needs core 0.5.0 or later.
 2. Open the hub page on the PC, click the Device button (plug icon): the Phone section shows a QR code. The terminal view prints the same address.
 3. Scan it with the phone camera. The phone opens `/phone` and keeps a cookie.
-4. Add the page to the home screen ("Add to Home Screen") to get it full screen. The page keeps the screen awake and shows "Hub unreachable, retrying" when the PC sleeps.
+4. Full screen: on Android, tap the page once, the browser bars hide. On an iPhone, use "Add to Home Screen": the icon opens the page without bars. The page keeps the screen awake and shows "Hub unreachable, retrying" when the PC sleeps. `/phone?debug` prints the measured layout.
 
 The token is in `~/.agentsdash/lan-token` on the PC. Delete the file and restart the hub to invalidate every paired phone.
 
 ## What it is not yet
 
 - The link is plain `http`: anyone on the same Wi-Fi can read the traffic. Use it on a network you trust.
-- No HTTPS, so no service worker, no offline mode, no push notification (iOS and Android require HTTPS for them).
+- No HTTPS, so no installed app on Android (the full screen tap is the stand-in), no service worker, no offline mode, no push notification (iOS and Android require HTTPS for them).
 - No control from the phone (dismiss, settings, themes): the hub refuses every write from a LAN client.
 
 ## Open questions

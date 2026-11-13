@@ -4,21 +4,28 @@ A phone (iPhone or Android) as a device of [agentsdash](https://github.com/tfabi
 
 It shows the hub page full screen, so you see which agent needs you even when you are away from your desk.
 
-Status: idea, nothing built yet. The design questions are tracked in the issues of this repository.
+Status: first version. It works on the home Wi-Fi over plain http and is read-only. The page itself lives in the core (`hub/web/phone.html`); this repository holds the documentation and the open questions.
 
-## Direction
+## Pairing
 
-A PWA, with no native code.
+1. On the PC, turn LAN access on: `"lan": {"enabled": true}` in `~/.agentsdash/config.json` (or `AGENTSDASH_LAN=1`), then restart the hub. Needs core 0.5.0 or later.
+2. Open the hub page on the PC, click the Device button (plug icon): the Phone section shows a QR code. The terminal view prints the same address.
+3. Scan it with the phone camera. The phone opens `/phone` and keeps a cookie.
+4. Add the page to the home screen ("Add to Home Screen") to get it full screen. The page keeps the screen awake and shows "Hub unreachable, retrying" when the PC sleeps.
 
-The hub already serves the page, so the phone only needs to reach it and be installable to the home screen.
+The token is in `~/.agentsdash/lan-token` on the PC. Delete the file and restart the hub to invalidate every paired phone.
+
+## What it is not yet
+
+- The link is plain `http`: anyone on the same Wi-Fi can read the traffic. Use it on a network you trust.
+- No HTTPS, so no service worker, no offline mode, no push notification (iOS and Android require HTTPS for them).
+- No control from the phone (dismiss, settings, themes): the hub refuses every write from a LAN client.
 
 ## Open questions
 
-- **Discovery.** One simple shortcut that finds the hub by itself: an mDNS name (`agentsdash.local`), a QR code shown by the hub page or the terminal view that opens the PWA with the address and a token, or a fixed URL typed once.
-- **LAN access.** The hub binds `127.0.0.1` and checks Host and Origin. It needs an opt-in bind to a LAN address, a pairing token and an extended Host and Origin allow-list.
-- **Company use.** Corporate networks (VPN, client isolation on Wi-Fi, blocked mDNS) may prevent a direct phone to PC link. Options: a private tunnel between phone and PC (a mesh VPN), or an authenticated relay. Needs a check against the company security policy.
-- **Security.** The page shows commands and session titles. Any non-local access needs authentication (a token in the pairing QR) and TLS, since iOS only installs a PWA and keeps service workers on HTTPS.
-- **Offline and wake.** What happens when the PC sleeps or the hub is down: reconnect the server-sent events, show a clear "hub unreachable" state, keep the screen awake (Screen Wake Lock API).
+- **Outside the home network.** Corporate networks (VPN, client isolation on Wi-Fi) may prevent a direct phone to PC link. Options: a private tunnel between phone and PC (a mesh VPN such as Tailscale, which also gives HTTPS), or an authenticated relay. Needs a check against the company security policy.
+- **HTTPS.** A local certificate or Tailscale `serve`, to unlock the service worker and the install prompt.
+- **Discovery.** An mDNS name (`agentsdash.local`) would survive an IP change; today the QR carries the IP address.
 
 ## Links
 
